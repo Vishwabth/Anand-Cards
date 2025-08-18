@@ -1,0 +1,347 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Card Website</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        /* Card Hover Effects */
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            margin-bottom: 30px;  /* Add space between cards */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Wishlist Button */
+        .wishlist-btn {
+            background-color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .wishlist-btn i {
+            color: #ff3e6c;
+            font-size: 14px;
+        }
+
+        .wishlist-btn:hover {
+            background-color: #ff3e6c;
+        }
+
+        .wishlist-btn:hover i {
+            color: white;
+        }
+
+        /* Add to Cart Button */
+        .addToCart {
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            transition: background-color 0.2s ease;
+        }
+
+        .addToCart:hover {
+            background-color: #0056b3;
+        }
+
+        /* Footer styles */
+        footer {
+            background-color: rgb(234, 10, 10);
+            color: white;
+            padding: 20px 0;
+            font-size: 14px;
+        }
+
+        footer h6 {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        footer ul {
+            padding: 0;
+            list-style-type: none;
+        }
+
+        footer ul li {
+            margin-bottom: 5px;
+        }
+
+        footer ul li a {
+            text-decoration: none;
+            color: #ddd;
+        }
+
+        footer ul li a:hover {
+            text-decoration: underline;
+            color: #fff;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        .main-title {
+            font-family: 'Lobster', cursive;
+            color: white;
+            font-size: 1.5em;
+        }
+
+        /* Ensures footer stays at the bottom of the page */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .wrapper-container {
+            min-height: 80vh; /* Minimum height for container to make space for footer */
+            padding-top: 15px;
+        }
+
+        /* Add space between product cards */
+        .product-card {
+            margin-bottom: 20px; /* Adjust spacing between cards */
+        }
+
+        /* Adjust gap between columns */
+        .col-6, .col-md-4, .col-lg-3 {
+            padding-bottom: 20px; /* Gap between cards vertically */
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color:rgb(234, 10, 10)">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <strong class="main-title">Anand Cards</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fa-solid fa-home"></i></a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="true">Invitation</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'product_list' %}?category=Hindu Cards">Hindu Cards</a></li>
+                            <li><a class="dropdown-item" href="{% url 'product_list' %}?category=Muslim Cards">Muslim Cards</a></li>
+                            <li><a class="dropdown-item" href="{% url 'product_list' %}?category=Worship Cards">Worships Cards</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-user"></i></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'view_wishlist' %}"><i class="fa-solid fa-heart"></i>(<span id="wishlist-count">{{ request.session.wishlist|length }}</span>)</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'view_cart' %}"><i class="fa-solid fa-shopping-cart"></i>(<span id="cart-count">{{ request.session.cart|length }}</span>)</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Categories Section -->
+    <div class="wrapper-container" style="background-color:rgb(255, 255, 255);">
+        <div class="container mt-4">
+            <div class="row g-3">
+                {% if wishlist_items %}
+                    <div class="row">
+                        {% for item in wishlist_items %}
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="card product-card" style="position: relative; overflow: hidden; border: 1px solid #ddd; border-radius: 8px;">
+                                    <img src="{{ item.product.image.url }}" class="card-img-top" alt="{{ item.product.name }}" style="width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #ddd;">
+                                    <div class="card-body text-center p-2">
+                                        <h5 class="card-title mb-1 text-truncate">{{ item.product.name }}</h5>
+                                        <p class="card-text text-success mb-2">Price: ₹{{ item.product.price }}</p>
+                                        <a href="#" class="btn btn-danger">Remove from Wishlist</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>{{ message|default:"Your wishlist is empty." }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h6>Contact Us</h6>
+                    <ul>
+                        <li>Email: <a href="mailto:support@example.com">support@example.com</a></li>
+                        <li>Phone: <a href="tel:+1234567890">+1 234 567 890</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6>Become a Dealer</h6>
+                    <p>Interested in partnering with us? <a href="/become-a-dealer">Apply Here</a></p>
+                </div>
+                <div class="col-md-4">
+                    <h6>Privacy & Policy</h6>
+                    <ul>
+                        <li><a href="/privacy-policy">Privacy Policy</a></li>
+                        <li><a href="/terms-conditions">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p><strong><i class="fa-solid fa-shop"></i></strong><br>123 Main Street, Suite 101, City, State, ZIP Code</p>
+                <p>&copy; 2024 Your Website Name. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function getCSRFToken() {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith('csrftoken=')) {
+                        cookieValue = decodeURIComponent(cookie.split('=')[1]);
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Add to Cart functionality
+        $(document).on('click', '.addToCart', function() {
+            const button = $(this);
+            const productId = button.data('product-id');
+            $.ajax({
+                url: "{% url 'view_cart' %}",
+                method: "POST",
+                headers: { 'X-CSRFToken': getCSRFToken() },
+                data: { product_id: productId },
+                success: function(response) {
+                    // Update the button to "Added to Cart"
+                    button.removeClass('btn-primary').addClass('btn-secondary');
+                    button.text('Added to Cart');
+                    button.prop('disabled', true);
+
+                    // Update cart count
+                    $('#cart-count').text(response.cart_count);
+                },
+                error: function() {
+                    alert('Failed to add product to cart.');
+                }
+            });
+        });
+
+        // Wishlist functionality
+        $(document).on('click', '.wishlist-btn', function() {
+            const button = $(this);
+            const productId = button.data('product-id');
+            $.ajax({
+                url: "{% url 'view_wishlist' %}",
+                method: "POST",
+                headers: { 'X-CSRFToken': getCSRFToken() },
+                data: { product_id: productId },
+                success: function(response) {
+                    // Update wishlist count
+                    $('#wishlist-count').text(response.wishlist_count);
+                },
+                error: function() {
+                    alert('Failed to add to wishlist.');
+                }
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.views import View
+from .models import Product
+import json
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
+class ViewWishlistView(View):
+    def get(self, request, *args, **kwargs):
+        # Retrieve the wishlist from the session
+        wishlist = request.session.get('wishlist', {})
+        wishlist_items = []
+
+        # Fetch product details from the database
+        for product_id in wishlist.keys():
+            product = get_object_or_404(Product, id=product_id)
+            wishlist_items.append({
+                'product': product,
+            })
+
+        return render(request, 'Wishlists/view_wishlist.html', {
+            'wishlist_items': wishlist_items,
+        })
+
+    @method_decorator(csrf_exempt)
+    def post(self, request, *args, **kwargs):
+        try:
+            # Parse the JSON body
+            data = json.loads(request.body)
+            product_id = str(data.get('product_id'))  # Ensure product_id is a string for dictionary keys
+            action = data.get('action')  # Action: 'add', 'remove'
+
+            if not product_id or not action:
+                return JsonResponse({'message': 'Product ID or action is missing!'}, status=400)
+
+            # Retrieve the wishlist from the session
+            wishlist = request.session.get('wishlist', {})
+
+            if action == 'add':
+                # Add the product to the wishlist if not already present
+                if product_id not in wishlist:
+                    wishlist[product_id] = 1  # Use `1` to signify presence
+            elif action == 'remove':
+                # Remove the product from the wishlist
+                if product_id in wishlist:
+                    del wishlist[product_id]
+            else:
+                return JsonResponse({'message': 'Invalid action!'}, status=400)
+
+            # Save the updated wishlist back to the session
+            request.session['wishlist'] = wishlist
+
+            # Count the total number of items in the wishlist
+            wishlist_count = len(wishlist)
+
+            return JsonResponse({
+                'message': 'Wishlist updated successfully!',
+                'wishlist_count': wishlist_count,
+            })
+
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Invalid JSON data!'}, status=400)

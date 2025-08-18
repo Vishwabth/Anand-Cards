@@ -1,0 +1,28 @@
+class GeneratePDFView(View):
+    def get(self, request, order_id):
+        try:
+            # Fetch the order details
+            order = Order.objects.get(id=order_id)
+            order_items = OrderItem.objects.filter(order=order)
+            
+            # Prepare context for the PDF
+            context = {
+                'order': order,
+                'order_items': order_items,
+                'is_guest': order.user is None,  # If no user, it's a guest order
+            }
+            
+            # Render the template into HTML
+            html_content = render_to_string('Orders/order_pdf.html', context)
+            
+            # Create PDF from the HTML content
+            html = HTML(string=html_content)
+            pdf_file = html.write_pdf()
+            
+            # Serve the PDF as a response
+            response = HttpResponse(pdf_file, content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="order_{order.id}.pdf"'
+            return response
+
+        except Order.DoesNotExist:
+            return HttpResponse("Order not found", status=404)

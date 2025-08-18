@@ -1,0 +1,263 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Card Website</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        .category-card {
+            transition: transform 0.3s ease;
+        }
+        .category-card:hover {
+            transform: scale(1.05);
+        }
+        footer {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+          
+        footer h6 {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+          
+        footer ul {
+            padding: 0;
+            list-style-type: none;
+        }
+        footer ul li a {
+            text-decoration: none;
+        }
+          
+        footer ul li a:hover {
+            text-decoration: underline;
+            color: #fff;
+        }
+        footer {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+          
+        footer h6 {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+          
+        footer ul {
+            padding: 0;
+            list-style-type: none;
+        }
+          
+        footer ul li {
+            margin-bottom: 5px;
+        }
+          
+        footer ul li a {
+            text-decoration: none;
+            color: #ddd;
+        }
+          
+        footer ul li a:hover {
+            text-decoration: underline;
+            color: #fff;
+        }
+          
+        footer p {
+            margin: 0;
+        }
+        .main-title {
+            font-family: 'Lobster', cursive;
+            color: white; /* Danger red */
+            font-size: 1.5em;
+        }
+        .navbar-nav{
+            color: white;
+        }
+        
+          
+          
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color:rgb(234, 10, 10)">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <strong class="main-title">Anand Cards</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <form class="d-flex" action="{% url 'search' %}" method="get">
+                <input class="form-control me-2" id="dynamic-placeholder" name="q" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>
+            <div class="collapse navbar-collapse" style="color:#ffffff"id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="">
+                    <i class="fa-solid fa-home"></i></a></li>
+                    <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="true">
+                            Invitation</a> <!-- Example icon for the dropdown -->
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'product_list' %}?category=Hindu Cards">Hindu Cards</a></li>
+                                <li><a class="dropdown-item" href="{% url 'product_list' %}?category=Muslim Cards">Muslim Cards</a></li>
+                                <li><a class="dropdown-item" href="{% url 'product_list' %}?category=Worship Cards">Worships Cards</a></li>
+                            </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-user"></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            {% if user.is_authenticated %}
+                                <li><a class="dropdown-item" href="{% url 'account_page' %}">My Account</a></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+                                <li><a class="dropdown-item" href="{% url 'signup' %}">Signup</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>                    
+                    <li class="nav-item"><a class="nav-link" href="{% url 'view_wishlist' %}"><i class="fa-solid fa-heart"></i>(<span id="wishlist-count">{{ request.session.wishlist|length }}</span>)</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'view_cart' %}"><i class="fa-solid fa-shopping-cart"></i>(<span id="cart-count">{{ request.session.cart|length }}</span>)</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Carousel -->
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{% static "pexels-weddingphotography-2060239 (1).jpg"%}" class="d-block w-100" alt="Card Collection">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static "pexels-weddingphotography-1444442 (1).jpg"%}" class="d-block w-100" alt="Festive Collection">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static "pexels-weddingphotography-2060240 (1).jpg" %}" class="d-block w-100" alt="Customized Cards">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <!-- Categories Section -->
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Shop by Category</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card category-card">
+                    <img src="{% static 'wedding 1.jpg' %}" class="card-img-top" alt="Wedding Cards">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Hindu Cards</h5>
+                        <p class="card-text">Elegant designs for your special day.</p>
+                        <a href="{% url 'product_list' %}?category=Hindu Cards" class="btn" style="background-color:rgb(234, 10, 10)">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card category-card">
+                    <img src="{% static 'wedding2.jpg' %}" class="card-img-top" alt="Muslim Cards">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Muslim Cards</h5>
+                        <p class="card-text">Elegant designs for your special day.</p>
+                        <a href="{% url 'product_list' %}?category=Muslim Cards" class="btn" style="background-color:rgb(234, 10, 10)">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card category-card">
+                    <img src="{% static 'images (5).jpg' %}" class="card-img-top" alt="Worship Cards">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Worship Cards</h5>
+                        <p class="card-text">Elegant designs for your special day.</p>
+                        <a href="{% url 'product_list' %}?category=Worship Cards" class="btn" style="background-color:rgb(234, 10, 10)">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Footer -->
+    <footer style="background-color:rgb(234, 10, 10); color: white; padding: 20px 0;">
+        <div class="container">
+          <div class="row">
+            <!-- Contact Us -->
+            <div class="col-md-4">
+              <h6 class="text-uppercase">Contact Us</h6>
+              <ul class="list-unstyled">
+                <li>Email: <a href="mailto:support@example.com" style="color: #ddd;">support@example.com</a></li>
+                <li>Phone: <a href="tel:+1234567890" style="color: #ddd;">+1 234 567 890</a></li>
+              </ul>
+            </div>
+            <!-- Become a Dealer -->
+            <div class="col-md-4">
+              <h6 class="text-uppercase">Become a Dealer</h6>
+              <p>Interested in partnering with us? <a href="/become-a-dealer" style="color: #ddd;">Apply Here</a></p>
+            </div>
+            <!-- Privacy and Policy -->
+            <div class="col-md-4">
+              <h6 class="text-uppercase">Privacy & Policy</h6>
+              <ul class="list-unstyled">
+                <li><a href="/privacy-policy" style="color: #ddd;">Privacy Policy</a></li>
+                <li><a href="/terms-conditions" style="color: #ddd;">Terms & Conditions</a></li>
+              </ul>
+            </div>
+          </div>
+          <hr style="border-top: 1px solid #444;">
+          <!-- Contact Address -->
+          <div class="text-center">
+            <p>
+              <strong><i class="fa-solid fa-shop"></i></strong><br>
+              123 Main Street, Suite 101, <br>
+              City, State, ZIP Code<br>
+            </p>
+            <p>&copy; 2025 Your Website Name. All Rights Reserved.</p>
+          </div>
+        </div>
+    </footer>
+    <script>
+        // Array of placeholder suggestions
+        const placeholderTexts = [
+            "Search for hinducards..",
+            "Search for muslimcards...",
+            "Search for worshipcards...",
+        ];
+
+        let index = 0;
+        const inputField = document.getElementById('dynamic-placeholder');
+
+        // Function to change the placeholder text periodically
+        setInterval(() => {
+            inputField.setAttribute('placeholder', placeholderTexts[index]);
+            index = (index + 1) % placeholderTexts.length; // Loop through suggestions
+        }, 3000); // Change every 3 seconds
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
